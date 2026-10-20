@@ -1,5 +1,6 @@
-import type { Country, JobCategory, Job, RecruitmentExperience, FAQ } from "@/types";
+import type { Country, JobCategory, Job, RecruitmentExperience } from "@/types";
 import { jobCategoryDefinitions } from "./job-categories";
+import { formatJobSalary } from "@/lib/job-presentation";
 
 // ─── Countries ────────────────────────────────────────────────────────────────
 export const countries: Country[] = [
@@ -221,7 +222,9 @@ export const countries: Country[] = [
 // Category definitions live in ./job-categories; counts are derived below the job dataset.
 
 // ─── Jobs (Mock) ──────────────────────────────────────────────────────────────
-export const jobs: Job[] = [
+// Explicit development samples: salary amounts are not currency conversions;
+// age ranges are illustrative criteria, not agency-approved vacancy terms.
+const sampleJobs: Omit<Job, "salaryDisplay">[] = [
   {
     id: "j001",
     reference: "A1-DEMO-001",
@@ -234,10 +237,12 @@ export const jobs: Job[] = [
     employer: "International Employer – Saudi Arabia",
     categorySlug: "drivers",
     categoryName: "Drivers",
-    salaryMin: 1200,
-    salaryMax: 1500,
-    currency: "SAR",
-    salaryDisplay: "SAR 1,200 – 1,500 / month",
+    salaryMin: 120000,
+    salaryMax: 150000,
+    currency: "LKR",
+    ageMin: 25,
+    ageMax: 45,
+    image: "/images/jobs/hot-jobs/heavy-vehicle-driver.webp",
     vacancies: 15,
     description:
       "We are seeking experienced Heavy Vehicle Drivers for a leading logistics company based in Riyadh, Saudi Arabia. The role involves transporting goods across designated routes in compliance with Saudi traffic regulations. Accommodation, meals, and transportation are provided.",
@@ -297,10 +302,12 @@ export const jobs: Job[] = [
     employer: "International Hospitality Group – UAE",
     categorySlug: "hospitality",
     categoryName: "Hospitality",
-    salaryMin: 1400,
-    salaryMax: 1600,
-    currency: "AED",
-    salaryDisplay: "AED 1,400 – 1,600 / month",
+    salaryMin: 100000,
+    salaryMax: 130000,
+    currency: "LKR",
+    ageMin: 21,
+    ageMax: 40,
+    image: "/images/jobs/hot-jobs/hotel-housekeeper.webp",
     vacancies: 20,
     description:
       "A leading hospitality group in Dubai is recruiting Hotel Housekeepers for their 5-star properties. The role requires maintaining high standards of cleanliness and guest service. All accommodation and meals are provided.",
@@ -356,10 +363,12 @@ export const jobs: Job[] = [
     employer: "International Engineering Contractor – Qatar",
     categorySlug: "electricians",
     categoryName: "Electricians",
-    salaryMin: 1800,
-    salaryMax: 2400,
-    currency: "QAR",
-    salaryDisplay: "QAR 1,800 – 2,400 / month",
+    salaryMin: 150000,
+    salaryMax: 190000,
+    currency: "LKR",
+    ageMin: 23,
+    ageMax: 45,
+    image: "/images/jobs/hot-jobs/electrical-technician.webp",
     vacancies: 8,
     description:
       "An established engineering and construction contractor in Doha is seeking qualified Electrical Technicians for commercial and industrial projects. Candidates must hold relevant technical qualifications and experience.",
@@ -418,10 +427,11 @@ export const jobs: Job[] = [
     employer: "International Security Services – Kuwait",
     categorySlug: "security",
     categoryName: "Security",
-    salaryMin: 120,
-    salaryMax: 160,
-    currency: "KWD",
-    salaryDisplay: "KWD 120 – 160 / month",
+    salaryMin: 110000,
+    salaryMax: 140000,
+    currency: "LKR",
+    ageMin: 21,
+    ageMax: 40,
     vacancies: 30,
     description:
       "A reputable security services company in Kuwait is recruiting Security Guards for commercial and residential premises. No prior security experience required – full training provided upon arrival.",
@@ -477,10 +487,11 @@ export const jobs: Job[] = [
     employer: "Facilities Management Group – Saudi Arabia",
     categorySlug: "technicians",
     categoryName: "Technicians",
-    salaryMin: 1500,
-    salaryMax: 2200,
-    currency: "SAR",
-    salaryDisplay: "SAR 1,500 – 2,200 / month",
+    salaryMin: 140000,
+    salaryMax: 180000,
+    currency: "LKR",
+    ageMin: 23,
+    ageMax: 45,
     vacancies: 10,
     description:
       "A leading facilities management company in Jeddah is recruiting HVAC Technicians for commercial and residential properties. Candidates must have hands-on experience with HVAC systems installation, servicing, and repair.",
@@ -535,10 +546,11 @@ export const jobs: Job[] = [
     employer: "Catering Services Group – UAE",
     categorySlug: "hospitality",
     categoryName: "Hospitality",
-    salaryMin: 1200,
-    salaryMax: 1500,
-    currency: "AED",
-    salaryDisplay: "AED 1,200 – 1,500 / month",
+    salaryMin: 90000,
+    salaryMax: 120000,
+    currency: "LKR",
+    ageMin: 21,
+    ageMax: 40,
     vacancies: 25,
     description:
       "An established catering and food services company in Abu Dhabi is recruiting Kitchen Helpers and Junior Cooks. Experience in Sri Lankan or South Asian cuisine is an advantage.",
@@ -593,10 +605,11 @@ export const jobs: Job[] = [
     employer: "Construction Contractor – Qatar",
     categorySlug: "technicians",
     categoryName: "Technicians",
-    salaryMin: 1600,
-    salaryMax: 2200,
-    currency: "QAR",
-    salaryDisplay: "QAR 1,600 – 2,200 / month",
+    salaryMin: 160000,
+    salaryMax: 200000,
+    currency: "LKR",
+    ageMin: 25,
+    ageMax: 45,
     vacancies: 12,
     description:
       "An international construction contractor in Qatar is seeking experienced Structural Welders for major infrastructure and industrial projects. Candidates must be able to demonstrate welding skills during interview.",
@@ -653,10 +666,11 @@ export const jobs: Job[] = [
     employer: "Logistics Company – Oman",
     categorySlug: "warehouse-logistics",
     categoryName: "Warehouse & Logistics",
-    salaryMin: 180,
-    salaryMax: 250,
-    currency: "OMR",
-    salaryDisplay: "OMR 180 – 250 / month",
+    salaryMin: 100000,
+    salaryMax: 125000,
+    currency: "LKR",
+    ageMin: 21,
+    ageMax: 40,
     vacancies: 18,
     description:
       "A growing logistics and distribution company in Muscat, Oman is seeking Warehouse Assistants for their operations centre. The role involves receiving, storing, and dispatching goods in an organised warehouse environment.",
@@ -700,6 +714,9 @@ export const jobs: Job[] = [
     updatedAt: "2026-08-26T00:00:00Z",
   },
 ];
+
+// Keep legacy consumers (homepage, detail, application) on the same derived display.
+export const jobs: Job[] = sampleJobs.map((job) => ({ ...job, salaryDisplay: formatJobSalary(job) }));
 
 // Derive catalog statistics from actual active sample listings, never seeded totals.
 export const jobCategories: JobCategory[] = jobCategoryDefinitions.map((category) => {
@@ -787,108 +804,4 @@ export const recruitmentExperiences: RecruitmentExperience[] = [
   },
 ];
 
-// ─── FAQ Data ─────────────────────────────────────────────────────────────────
-export const faqs: FAQ[] = [
-  // Applying for Jobs
-  {
-    id: "faq-1",
-    category: "Applying for Jobs",
-    question: "How can I apply for an overseas job?",
-    answer:
-      "You can browse available vacancies on our Jobs page, select a position that matches your skills, and submit your application online. Our team will review your application and contact you if you meet the requirements.",
-    order: 1,
-  },
-  {
-    id: "faq-2",
-    category: "Applying for Jobs",
-    question: "Do I need previous overseas experience to apply?",
-    answer:
-      "Not necessarily. Many vacancies are open to candidates without prior overseas experience. Some positions may require specific work experience, which will be stated in the job description. We encourage you to apply for positions that match your skills.",
-    order: 2,
-  },
-  {
-    id: "faq-3",
-    category: "Applying for Jobs",
-    question: "Can I apply for multiple jobs at the same time?",
-    answer:
-      "Yes, you may apply for multiple positions. However, we recommend applying only for roles that genuinely match your skills and qualifications to ensure the best outcomes.",
-    order: 3,
-  },
-  // Documents
-  {
-    id: "faq-4",
-    category: "Documents",
-    question: "What documents are normally required for overseas employment?",
-    answer:
-      "Typical documents include a valid Sri Lankan passport, National Identity Card (NIC), educational and professional certificates, and a CV. Additional documents such as medical reports and police clearance may be required at later stages. Our team will guide you through the specific requirements for each position.",
-    order: 4,
-  },
-  {
-    id: "faq-5",
-    category: "Documents",
-    question: "Do I need to obtain a passport before applying?",
-    answer:
-      "You do not need a passport to initially apply. However, a valid passport will be required before the visa processing stage. We recommend applying for your passport early to avoid delays.",
-    order: 5,
-  },
-  // Recruitment Process
-  {
-    id: "faq-6",
-    category: "Recruitment Process",
-    question: "How will I know whether I have been shortlisted?",
-    answer:
-      "Shortlisted candidates are notified by phone and/or SMS. Please ensure your contact number is correct when applying. We recommend saving our contact number and checking your messages regularly.",
-    order: 6,
-  },
-  {
-    id: "faq-7",
-    category: "Recruitment Process",
-    question: "How long does the recruitment process take?",
-    answer:
-      "The timeline varies depending on the position, the employer's requirements, and regulatory processing. We always aim to keep candidates informed at each stage.",
-    order: 7,
-  },
-  {
-    id: "faq-8",
-    category: "Recruitment Process",
-    question: "Will I need to attend an interview?",
-    answer:
-      "Many positions require a face-to-face or online interview with the employer. Interview details will be communicated to shortlisted candidates. Some positions may require a practical skills test.",
-    order: 8,
-  },
-  // Overseas Employment
-  {
-    id: "faq-9",
-    category: "Overseas Employment",
-    question: "What regulatory approvals are required before departure?",
-    answer:
-      "Candidates should follow the current requirements published by the Sri Lanka Bureau of Foreign Employment (SLBFE) and other relevant authorities. For each confirmed role, the recruitment team should explain the applicable steps and official channels.",
-    order: 9,
-  },
-  {
-    id: "faq-10",
-    category: "Overseas Employment",
-    question: "Are job offers guaranteed?",
-    answer:
-      "No job offer can be guaranteed. Final selection decisions are made by the employer following its interview and assessment. Visa approval and final employment outcomes also cannot be guaranteed.",
-    order: 10,
-  },
-  // Employer Services
-  {
-    id: "faq-11",
-    category: "Employer Services",
-    question: "How can an overseas company recruit Sri Lankan workers through your agency?",
-    answer:
-      "Overseas employers can submit a manpower requirement through our For Employers page. Our recruitment team will review the requirement and contact you to discuss how we can support your staffing needs.",
-    order: 11,
-  },
-  // Contact
-  {
-    id: "faq-12",
-    category: "Contact & Support",
-    question: "How can I contact the recruitment team?",
-    answer:
-      "You can contact us by phone, WhatsApp, or email during office hours. Our contact details are available on the Contact Us page. For urgent enquiries, WhatsApp is the fastest way to reach us.",
-    order: 12,
-  },
-];
+export { faqs } from "./faqs";
