@@ -38,7 +38,7 @@ export function AdminTopbar() {
     <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white pl-[calc(16rem+1px)] pr-4 shadow-sm transition-all">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
-        <Link href="/admin/dashboard" className="text-slate-400 hover:text-navy-700 transition">
+        <Link href="/dashboard" className="text-slate-400 hover:text-navy-700 transition">
           <Home className="size-3.5" />
         </Link>
         {crumbs.slice(1).map((crumb) => (

@@ -23,8 +23,14 @@ export default function AdminLoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const fillDemoCredentials = () => {
+    setValue("email", "admin@a-oneagency.lk", { shouldValidate: true });
+    setValue("password", "admin123456", { shouldValidate: true });
+  };
 
   const onSubmit = async (data: FormData) => {
     setServerError(null);
@@ -39,7 +45,7 @@ export default function AdminLoginPage() {
         setServerError(body.error ?? "Invalid credentials. Please try again.");
         return;
       }
-      router.push("/admin/dashboard");
+      router.push("/dashboard");
     } catch {
       setServerError("An unexpected error occurred. Please try again.");
     }
@@ -138,7 +144,25 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-[11px] text-navy-500">
+          {/* Demo Credentials Box */}
+          <div className="mt-6 rounded-xl border border-brand-gold/30 bg-brand-gold/10 p-3.5 text-xs text-amber-200">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-brand-gold">Demo Login Credentials</span>
+              <button
+                type="button"
+                onClick={fillDemoCredentials}
+                className="rounded bg-brand-gold/20 px-2 py-0.5 text-[11px] font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-black transition"
+              >
+                Auto-fill
+              </button>
+            </div>
+            <div className="mt-2 space-y-1 font-mono text-[11px] text-white">
+              <p><span className="text-navy-300 font-sans">Email:</span> admin@a-oneagency.lk</p>
+              <p><span className="text-navy-300 font-sans">Password:</span> admin123456</p>
+            </div>
+          </div>
+
+          <p className="mt-4 text-center text-[11px] text-navy-500">
             This portal is restricted to authorised personnel only.
           </p>
         </div>
