@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Info, Mail, MapPin, Phone, UserRound } from "lucide-react";
@@ -32,7 +31,6 @@ export default async function JobApplyPage({ params }: Props) {
   const { slug } = await params;
   const job = jobs.find((item) => item.slug === slug);
   if (!job) notFound();
-  await connection();
   const { closed } = jobClosingState(job.closingDate);
   const canApply = !closed && job.status === "active";
 

@@ -34,20 +34,38 @@ export default function AdminLoginPage() {
 
   const onSubmit = async (data: FormData) => {
     setServerError(null);
+    const normalizedEmail = data.email.trim().toLowerCase();
+    const isDemoMatch =
+      (normalizedEmail === "admin@a-oneagency.lk" ||
+        normalizedEmail === "admin@a-oneagency.com") &&
+      data.password === "admin123456";
+
     try {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+
       if (!res.ok) {
+        // Fallback for static hosting (GitHub Pages) where /api/admin/login is not running
+        if (isDemoMatch) {
+          router.push("/dashboard");
+          return;
+        }
         const body = await res.json().catch(() => ({}));
-        setServerError(body.error ?? "Invalid credentials. Please try again.");
+        setServerError(body.error ?? "Invalid credentials. Use demo password: admin123456");
         return;
       }
+
       router.push("/dashboard");
     } catch {
-      setServerError("An unexpected error occurred. Please try again.");
+      // In static deployment if API route is not available
+      if (isDemoMatch) {
+        router.push("/dashboard");
+        return;
+      }
+      setServerError("Authentication failed. Use demo password: admin123456");
     }
   };
 

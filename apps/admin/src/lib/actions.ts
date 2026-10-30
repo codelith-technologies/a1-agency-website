@@ -1,6 +1,3 @@
-"use server";
-
-import { revalidatePath } from "next/cache";
 import type {
   CountryFormValues,
   CategoryFormValues,
@@ -43,77 +40,70 @@ export async function uploadImageToStorage(
   }
 }
 
-// ─── 1. Country Server Actions ───────────────────────────────────────────────
+// ─── 1. Country Actions ──────────────────────────────────────────────────────
 export async function saveCountryAction(data: CountryFormValues) {
   try {
-    console.log("[Server Action] saveCountryAction:", data);
-    revalidatePath("/taxonomy/countries");
+    console.log("[Action] saveCountryAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save country." };
   }
 }
 
-// ─── 2. Category Server Actions ──────────────────────────────────────────────
+// ─── 2. Category Actions ─────────────────────────────────────────────────────
 export async function saveCategoryAction(data: CategoryFormValues) {
   try {
-    console.log("[Server Action] saveCategoryAction:", data);
-    revalidatePath("/taxonomy/categories");
+    console.log("[Action] saveCategoryAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save category." };
   }
 }
 
-// ─── 3. Review Server Actions ────────────────────────────────────────────────
+// ─── 3. Review Actions ───────────────────────────────────────────────────────
 export async function saveReviewAction(data: ReviewFormValues) {
   try {
-    console.log("[Server Action] saveReviewAction:", data);
-    revalidatePath("/reviews");
+    console.log("[Action] saveReviewAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save review." };
   }
 }
 
-// ─── 4. Announcement Server Actions ──────────────────────────────────────────
+// ─── 4. Announcement Actions ─────────────────────────────────────────────────
 export async function saveAnnouncementAction(data: AnnouncementFormValues) {
   try {
-    console.log("[Server Action] saveAnnouncementAction:", data);
-    revalidatePath("/announcements");
+    console.log("[Action] saveAnnouncementAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save announcement." };
   }
 }
 
-// ─── 5. Event Server Actions ─────────────────────────────────────────────────
+// ─── 5. Event Actions ────────────────────────────────────────────────────────
 export async function saveEventAction(data: EventFormValues) {
   try {
-    console.log("[Server Action] saveEventAction:", data);
-    revalidatePath("/events");
+    console.log("[Action] saveEventAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save event." };
   }
 }
 
-// ─── 6. FAQ Server Actions ───────────────────────────────────────────────────
+// ─── 6. FAQ Actions ──────────────────────────────────────────────────────────
 export async function saveFAQAction(data: FAQFormValues) {
   try {
-    console.log("[Server Action] saveFAQAction:", data);
-    revalidatePath("/faqs");
+    console.log("[Action] saveFAQAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save FAQ." };
   }
 }
 
-// ─── 7. Team Member Server Actions ───────────────────────────────────────────
+// ─── 7. Team Member Actions ──────────────────────────────────────────────────
 export async function saveTeamMemberAction(data: TeamMemberFormValues) {
   try {
-    console.log("[Server Action] saveTeamMemberAction:", data);
-    revalidatePath("/team");
+    console.log("[Action] saveTeamMemberAction:", data);
     return { success: true, data };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to save team member." };

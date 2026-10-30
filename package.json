@@ -14,6 +14,7 @@
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@a1/web",
     "build:admin": "turbo run build --filter=@a1/admin",
+    "build:pages": "node scripts/build-gh-pages.mjs",
     "lint": "turbo run lint",
     "clean": "turbo run clean"
   },

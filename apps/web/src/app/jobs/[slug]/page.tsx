@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,8 +40,6 @@ export default async function JobDetailPage({ params }: Props) {
   const job = jobs.find((item) => item.slug === slug);
   if (!job) notFound();
 
-  // Evaluate deadlines per request, rather than freezing them at build time.
-  await connection();
   const now = new Date();
   const { closed, closingSoon } = jobClosingState(job.closingDate, now);
   const canApply = !closed && job.status === "active";
