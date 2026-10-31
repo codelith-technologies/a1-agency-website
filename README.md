@@ -6,9 +6,9 @@ Enterprise-grade monorepo for A-One Agency, separating the public recruitment po
 
 ## 🌐 Live GitHub Pages Links
 
-* 🌍 **Public Website:** [https://dananjarukshan.github.io/a1-agency-website/](https://dananjarukshan.github.io/a1-agency-website/)
-* 🛡️ **Admin Portal / Login:** [https://dananjarukshan.github.io/a1-agency-website/admin/](https://dananjarukshan.github.io/a1-agency-website/admin/)
-* 📊 **Admin Dashboard:** [https://dananjarukshan.github.io/a1-agency-website/admin/dashboard](https://dananjarukshan.github.io/a1-agency-website/admin/dashboard)
+* 🌍 **Public Website:** [https://codelith-technologies.github.io/a1-agency-website/](https://codelith-technologies.github.io/a1-agency-website/)
+* 🛡️ **Admin Portal / Login:** [https://codelith-technologies.github.io/a1-agency-website/admin/](https://codelith-technologies.github.io/a1-agency-website/admin/)
+* 📊 **Admin Dashboard:** [https://codelith-technologies.github.io/a1-agency-website/admin/dashboard](https://codelith-technologies.github.io/a1-agency-website/admin/dashboard)
 
 ### 🔐 Demo Admin Credentials
 * **Email:** `admin@a-oneagency.lk` (or `admin@a-oneagency.com`)
