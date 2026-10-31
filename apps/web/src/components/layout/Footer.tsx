@@ -1,7 +1,9 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, ChevronRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { assetPath } from "@/lib/utils";
 import styles from "./Footer.module.css";
 
 const groups = [
@@ -64,7 +66,11 @@ export default function Footer() {
   return (
     <footer className={styles.footer} role="contentinfo">
       <div className={`container-padded ${styles.container}`}>
-        <section className={styles.contactBanner} aria-labelledby="footer-contact-title">
+        <section
+          className={styles.contactBanner}
+          style={{ "--footer-map-url": `url(${assetPath("/images/footer-world-map.svg")})` } as CSSProperties}
+          aria-labelledby="footer-contact-title"
+        >
           <div className={styles.bannerCopy}>
             <h2 id="footer-contact-title">
               <span className={styles.bannerQuestion}>Looking for <strong>Manpower for your company?</strong></span>

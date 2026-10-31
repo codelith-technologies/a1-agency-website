@@ -5,7 +5,7 @@
   background-color: #f8f7f3;
   background-image:
     linear-gradient(90deg, rgb(248 247 243 / 0.82), rgb(248 247 243 / 0.35)),
-    url("/images/recruitment-experiences-background.png");
+    var(--testimonials-bg-url, url("/images/recruitment-experiences-background.png"));
   background-position: center, 60% center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -227,7 +227,7 @@
   .section {
     background-image:
       linear-gradient(180deg, rgb(248 247 243 / 0.65), rgb(248 247 243 / 0.8) 65%, #f8f7f3),
-      url("/images/recruitment-experiences-background.png");
+      var(--testimonials-bg-url, url("/images/recruitment-experiences-background.png"));
     background-position: center top, 70% top;
     background-size: 100% 44rem, auto 44rem;
   }

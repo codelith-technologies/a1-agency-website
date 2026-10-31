@@ -1,7 +1,9 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { BadgeCheck, Building2, Info, Quote, Star, UserRound } from "lucide-react";
 import { recruitmentExperiences } from "@/data";
 import type { RecruitmentExperience } from "@/types";
+import { assetPath } from "@/lib/utils";
 import styles from "./Testimonials.module.css";
 
 const experienceGroups = [
@@ -70,7 +72,11 @@ export default function Testimonials() {
   const hasRealExperiences = recruitmentExperiences.some((experience) => !experience.isDemo);
 
   return (
-    <section className={styles.section} aria-labelledby="recruitment-experiences-heading">
+    <section
+      className={styles.section}
+      style={{ "--testimonials-bg-url": `url(${assetPath("/images/recruitment-experiences-background.png")})` } as CSSProperties}
+      aria-labelledby="recruitment-experiences-heading"
+    >
       <div className="container-padded">
         <header className={styles.header}>
           <p className={styles.eyebrow}>Recruitment Experiences</p>

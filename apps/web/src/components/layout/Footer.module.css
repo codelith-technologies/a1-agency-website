@@ -38,7 +38,7 @@
   gap: 2rem;
   min-height: 15rem;
   padding: 3rem;
-  background: #50431f url("/images/footer-world-map.svg") center / cover no-repeat;
+  background: #50431f var(--footer-map-url, url("/images/footer-world-map.svg")) center / cover no-repeat;
   border: 1px solid rgb(244 195 0 / 0.12);
 }
 

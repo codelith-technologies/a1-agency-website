@@ -77,3 +77,22 @@ export function daysUntilClosing(closingDate: string): number {
   const diffTime = closing.getTime() - now.getTime();
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
+
+/** Prepend NEXT_PUBLIC_BASE_PATH to asset paths (for non-<Image> assets like video or background CSS) */
+export function assetPath(path: string): string {
+  if (!path) return path;
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("data:") ||
+    path.startsWith("blob:")
+  ) {
+    return path;
+  }
+  const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  if (base && clean.startsWith(`${base}/`)) {
+    return clean;
+  }
+  return `${base}${clean}`;
+}

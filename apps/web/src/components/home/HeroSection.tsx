@@ -13,6 +13,7 @@ import {
   Search,
 } from "lucide-react";
 import { countries, jobCategories, jobs } from "@/data";
+import { assetPath } from "@/lib/utils";
 import styles from "./HeroSection.module.css";
 import statsStyles from "./Statistics.module.css";
 
@@ -47,7 +48,7 @@ export default function HeroSection() {
             aria-hidden="true"
             className={styles.video}
           >
-            <source src="/videos/homepage-hero-loop.mp4" type="video/mp4" />
+            <source src={assetPath("/videos/homepage-hero-loop.mp4")} type="video/mp4" />
           </video>
           <div className={styles.overlay} aria-hidden="true" />
 

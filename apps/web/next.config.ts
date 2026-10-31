@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   ...(basePath ? { basePath, assetPrefix: `${basePath}/` } : {}),
   transpilePackages: ["@a1/types", "@a1/ui", "@a1/database", "@a1/config"],
   images: {
-    unoptimized: true,
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
@@ -18,6 +19,9 @@ const nextConfig: NextConfig = {
         hostname: "flagsapi.com",
       },
     ],
+  },
+  experimental: {
+    cpus: 1,
   },
 };
 
