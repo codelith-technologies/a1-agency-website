@@ -1,146 +1,49 @@
-import type { Metadata } from "next";
-import { Phone, Mail, MapPin, Clock, ShieldAlert, MessageSquare } from "lucide-react";
+﻿import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowUpRight, Phone, Mail, MapPin, Clock, MessageCircle } from "lucide-react";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import ContactForm from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 import { whatsappUrl } from "@/lib/utils";
+import styles from "./Contact.module.css";
 
 export const metadata: Metadata = {
   title: `Contact Us | ${siteConfig.shortName}`,
-  description:
-    "Contact the A1 International Manpower Agency team by office visit, phone, email, or WhatsApp once official details are confirmed.",
+  description: "Contact A-One Foreign Employment Agency in Kandy for overseas job enquiries, recruitment guidance and international manpower requirements.",
   alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
-  const phoneConfigured = !siteConfig.phone.includes("X");
-
+  const whatsappConfigured = /^\+?[1-9][\d\s()-]*$/.test(siteConfig.whatsapp.trim())
+    && /^[1-9]\d{9,14}$/.test(siteConfig.whatsapp.replace(/\D/g, ""));
   return (
-    <div className="bg-slate-50 min-h-screen pb-16">
-      <div className="bg-brand-black">
-        <div className="container-padded py-12">
-          <Breadcrumbs items={[{ label: "Contact Us" }]} className="text-slate-400 mb-3" />
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Contact Our Recruitment Office
-          </h1>
-          <p className="text-slate-300 text-base max-w-2xl">
-            Have questions about overseas vacancies or manpower recruitment? Reach out to our recruitment team.
-          </p>
+    <div className={styles.page}>
+      <header className={styles.hero}><div className="container-padded">
+        <Breadcrumbs items={[{ label: "Contact Us" }]} className={styles.breadcrumbs} />
+        <div className={styles.heroCopy}><p className={styles.eyebrow}>Contact A-One</p><h1>Your next step starts<br />with <span>a conversation.</span></h1><p>From overseas career opportunities to finding the right people for your business, connect with our recruitment team in Kandy.</p></div>
+        <div className={styles.heroFootnote}><span>For candidates & international employers</span><a href="#office">Office details & opening hours <ArrowUpRight size={17} aria-hidden="true" /></a></div>
+      </div></header>
+      <section className={`container-padded ${styles.section}`} aria-labelledby="contact-heading">
+        <div className={styles.intro}><div><p className={styles.eyebrow}>Let’s connect</p><h2 id="contact-heading">We’re here to help you<br />move forward.</h2></div><p>Ask about a vacancy, understand your next recruitment step, or discuss an employer requirement through our published contact channels.</p></div>
+        <div className={styles.contactGrid}>
+          <a className={styles.contactCard} href={siteConfig.phoneHref}><Phone size={23} aria-hidden="true" /><p>Speak with our team</p><h3>Give us a call</h3><span>{siteConfig.phoneDisplay} <ArrowUpRight size={18} aria-hidden="true" /></span></a>
+          <a className={styles.contactCard} href={`mailto:${siteConfig.email}`}><Mail size={23} aria-hidden="true" /><p>General enquiries</p><h3>Write to A-One</h3><span>{siteConfig.email} <ArrowUpRight size={18} aria-hidden="true" /></span></a>
+          {whatsappConfigured ? <a className={styles.contactCard} href={whatsappUrl(siteConfig.whatsapp)} target="_blank" rel="noopener noreferrer"><MessageCircle size={23} aria-hidden="true" /><p>Start a conversation</p><h3>Chat on WhatsApp</h3><span>Open WhatsApp <ArrowUpRight size={18} aria-hidden="true" /></span></a> : <a className={styles.contactCard} href={`mailto:${siteConfig.emailEmployers}`}><MessageCircle size={23} aria-hidden="true" /><p>International employers</p><h3>Discuss your requirements</h3><span>Contact our employer team <ArrowUpRight size={18} aria-hidden="true" /></span></a>}
         </div>
-      </div>
-
-      <div className="container-padded py-12">
-        {/* Scam Warning Alert */}
-        <div className="bg-amber-50 border border-amber-300 rounded-xl p-5 mb-10 flex items-start gap-3.5">
-          <ShieldAlert size={22} className="text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h2 className="font-bold text-amber-900 text-sm">Official Communication Channels Only</h2>
-            <p className="text-xs text-amber-800 leading-relaxed mt-0.5">
-              Before launch, replace every placeholder below with confirmed agency details. Candidates should communicate only through contact channels the agency has formally published.
-            </p>
-          </div>
+        <div className={styles.enquiryGrid}>
+          <div className={styles.formPanel}><p className={styles.eyebrow}>Your enquiry</p><h2>How can we help?</h2><p className={styles.formIntro}>Tell us a little about what you’re looking for. For a live enquiry, please call or email our team.</p><ContactForm /></div>
+          <aside className={styles.guide} aria-labelledby="guidance-heading"><p className={styles.eyebrow}>A little guidance</p><h2 id="guidance-heading">Find the right<br />starting point.</h2>
+            <div><span>01 / For job seekers</span><h3>Explore your opportunities.</h3><p>Browse roles by destination and career field, then review the requirements for a position that interests you.</p><Link href="/jobs">Browse opportunities <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
+            <div><span>02 / For employers</span><h3>Build your team with A-One.</h3><p>Explore our recruitment services and the information needed to discuss your manpower requirements.</p><Link href="/employers">Explore employer services <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
+            <div><span>03 / Common questions</span><h3>Understand the process.</h3><p>Find guidance on applications, documents and the stages of overseas recruitment.</p><Link href="/faq">Read common questions <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
+          </aside>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-          {/* Contact Details */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
-              <h2 className="font-bold text-[#0f1f3d] text-lg mb-2">Office Information</h2>
-
-              <div className="flex items-start gap-3.5 text-sm">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-[#0f1f3d] flex-shrink-0">
-                  <MapPin size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5">Main Office Address</p>
-                  <p className="font-semibold text-[#0f1f3d] leading-snug">
-                    {[siteConfig.address.street, siteConfig.address.city, siteConfig.address.province, siteConfig.address.country].filter(Boolean).join(", ")}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 text-sm">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-[#0f1f3d] flex-shrink-0">
-                  <Phone size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5">Telephone & Mobile</p>
-                  {phoneConfigured ? (
-                    <a href={`tel:${siteConfig.phone}`} className="font-semibold text-[#0f1f3d] hover:text-blue-700 block">
-                      {siteConfig.phone}
-                    </a>
-                  ) : (
-                    <p className="font-semibold text-slate-500">Official number to be provided</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 text-sm">
-                <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 flex-shrink-0">
-                  <MessageSquare size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5">WhatsApp Inquiry</p>
-                  <a
-                    href={whatsappUrl(siteConfig.whatsapp)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-teal-700 hover:underline block"
-                  >
-                    {siteConfig.whatsappDisplay} (Chat Now)
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 text-sm">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-[#0f1f3d] flex-shrink-0">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5">Email Support</p>
-                  <a href={`mailto:${siteConfig.email}`} className="font-semibold text-[#0f1f3d] hover:text-blue-700 block">
-                    {siteConfig.email}
-                  </a>
-                  <a href={`mailto:${siteConfig.emailEmployers}`} className="text-xs text-slate-500 hover:underline block mt-0.5">
-                    Employers: {siteConfig.emailEmployers}
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 text-sm">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-[#0f1f3d] flex-shrink-0">
-                  <Clock size={18} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-0.5">Office Hours</p>
-                  {siteConfig.officeHours.map(({ days, hours }) => (
-                    <p key={days} className="font-semibold text-[#0f1f3d]">{days}: {hours}</p>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Map placeholder */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 text-center">
-              <div className="h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-sm font-medium mb-3">
-                📍 Interactive Google Map Embed Area
-              </div>
-              <p className="text-xs text-slate-500">
-                Replace this area with the confirmed office map before launch.
-              </p>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200 p-6 sm:p-8">
-            <h2 className="font-bold text-[#0f1f3d] text-xl mb-2">Send Us a Message</h2>
-            <p className="text-sm text-slate-600 mb-6">
-              Fill out the form below and our recruitment coordinator will respond to you promptly.
-            </p>
-            <ContactForm />
-          </div>
-        </div>
-      </div>
+      </section>
+      <section id="office" className={styles.office} aria-labelledby="office-heading"><div className={`container-padded ${styles.officeGrid}`}>
+        <div><p className={styles.eyebrow}>Visit our office</p><h2 id="office-heading">A conversation.<br />A clearer direction.</h2><p className={styles.officeIntro}>Meet our team in Kandy to discuss overseas recruitment. Call ahead to plan your visit.</p><div className={styles.address}><MapPin size={22} aria-hidden="true" /><address>{siteConfig.address.street}<br />{siteConfig.address.city}, {siteConfig.address.country}</address></div><a href={siteConfig.mapUrl} target="_blank" rel="noopener noreferrer" className={styles.primary}>Get directions <ArrowUpRight size={18} aria-hidden="true" /></a></div>
+        <div className={styles.hours}><Clock size={24} aria-hidden="true" /><h3>Office opening hours</h3><dl>{siteConfig.officeHours.map(({ days, hours }) => <div key={days}><dt>{days}</dt><dd>{hours}</dd></div>)}</dl><p>Please contact us to confirm availability before travelling.</p></div>
+      </div></section>
+      <section className={`container-padded ${styles.closing}`} aria-label="Recruitment guidance"><div><p className={styles.eyebrow}>Know what comes next</p><h2>Make your next move with clarity.</h2></div><Link href="/how-it-works">Explore the recruitment journey <ArrowUpRight size={19} aria-hidden="true" /></Link></section>
     </div>
   );
 }

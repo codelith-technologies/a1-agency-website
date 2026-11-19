@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { assetPath } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { ArrowRight, BriefcaseBusiness, ChevronDown, Globe, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { siteConfig } from "@/config/site";
@@ -142,11 +144,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
 
       <div className={styles.mainRow}>
         <Link href="/" className={styles.brand} data-header-brand aria-label={`${siteConfig.name} – Home`} onClick={closeNavigation}>
-          <span className={styles.brandMark} aria-hidden="true">{siteConfig.brand.logoText}</span>
-          <span className={styles.brandCopy}>
-            <span className={styles.brandName}>{siteConfig.shortName}</span>
-            <span className={styles.brandTagline}>International Manpower</span>
-          </span>
+          <Image src={assetPath("/images/a-one-logo-footer.png")} alt="" width={1300} height={400} className={styles.brandLogo} preload />
         </Link>
 
         <nav className={styles.desktopNav} aria-label="Main navigation">

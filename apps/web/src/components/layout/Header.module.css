@@ -51,6 +51,14 @@
   border-radius: var(--radius-sm);
 }
 
+.brandLogo {
+  display: block;
+  width: 208px;
+  height: auto;
+  /* Convert the official dark-background artwork to black on white. */
+  filter: grayscale(1) brightness(2) invert(1);
+}
+
 .brandMark {
   display: grid;
   place-items: center;

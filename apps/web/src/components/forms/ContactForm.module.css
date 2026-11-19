@@ -1,0 +1,27 @@
+.form { color: #342e21; }
+.note { display: flex; align-items: start; gap: .75rem; padding: 1.25rem; border: 1px solid #ddd2b3; background: #efe9d7; color: #6a5c3e; font-size: .8125rem; line-height: 1.85; }
+.note svg { flex-shrink: 0; margin-top: .2rem; color: #8a7022; }
+.note strong { display: block; color: #463a20; margin-bottom: .25rem; }
+.required { margin-block: 1.25rem; color: #756a53; font-size: .75rem; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.full { grid-column: 1 / -1; }
+.form label { display: block; margin-bottom: .625rem; font-size: .8125rem; font-weight: 600; }
+.form label span { color: #98602f; }
+.form input, .form textarea { width: 100%; min-height: 48px; border: 1px solid #d7cfbd; border-radius: 0; background: #faf9f4; padding: .875rem 1rem; color: #29271e; font: inherit; font-size: .875rem; line-height: 1.6; }
+.form textarea { resize: vertical; min-height: 140px; }
+.form input::placeholder, .form textarea::placeholder { color: #817865; opacity: 1; }
+.form input:focus, .form textarea:focus { outline: 2px solid #977300; outline-offset: 2px; background: #fffefa; }
+.form [aria-invalid="true"] { border-color: #a33d2b; }
+.error { color: #a33d2b; font-size: .75rem; margin-block: .5rem; line-height: 1.6; }
+.submit { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: .75rem; min-height: 48px; margin-top: 1.75rem; padding: .875rem 1rem; background: #f4c300; color: #22211b; border: 1px solid #f4c300; font-size: .8125rem; font-weight: 600; cursor: pointer; }
+.submit:hover { background: #e5b700; border-color: #e5b700; }
+.submit:disabled { opacity: .65; cursor: wait; }
+.footnote { margin-top: 1rem; color: #756a53; font-size: .6875rem; line-height: 1.9; text-align: center; }
+.success { padding: 2rem; border: 1px solid #d5c9ad; background: #efe9d7; text-align: center; }
+.success > svg { color: #716025; margin: 0 auto 1.25rem; }
+.success h3 { font-size: 1.25rem; font-weight: 600; }
+.success p { margin-top: 1rem; color: #6a5c3e; font-size: .875rem; line-height: 1.85; }
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 599px) { .grid { grid-template-columns: minmax(0, 1fr); } .note, .success { padding: 1rem; } .form input, .form textarea { font-size: 1rem; } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }

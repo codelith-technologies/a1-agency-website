@@ -5,13 +5,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CheckCircle, Loader2 } from "lucide-react";
+import styles from "./ContactForm.module.css";
 
 const schema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
-  phone: z.string().min(9, "Valid phone number is required"),
+  fullName: z.string().trim().min(2, "Full name is required"),
+  phone: z.string().trim().min(9, "Valid phone number is required"),
   email: z.string().email("Valid email address is required"),
-  subject: z.string().min(2, "Subject is required"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  subject: z.string().trim().min(2, "Subject is required"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -34,7 +35,7 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+      <div className={styles.success} role="status">
         <div className="w-14 h-14 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle size={28} className="text-teal-600" />
         </div>
@@ -42,25 +43,24 @@ export default function ContactForm() {
         <p className="text-sm text-slate-600 mb-6">
           Your message passed validation. This frontend demo did not transmit or store the data.
         </p>
-        <button onClick={() => setSubmitted(false)} className="btn btn-secondary btn-sm">
-          Send Another Message
+        <button onClick={() => setSubmitted(false)} className={styles.submit}>
+          Try Another Enquiry
         </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-      <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-900">
-        Demo mode: this form validates locally only. Connect a protected server endpoint before
-        accepting live enquiries.
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className={`${styles.form} space-y-4`} aria-label="Contact enquiry" aria-busy={isSubmitting}>
+      <div className={styles.note}>
+        <p><strong>Try the enquiry experience.</strong> Use test details. This demo checks your entries in your browser; nothing is sent or saved.</p>
       </div>
       <div>
         <label htmlFor="fullName" className="form-label">
           Full Name <span className="text-red-500">*</span>
         </label>
-        <input id="fullName" autoComplete="name" {...register("fullName")} className="form-input" placeholder="Your name" />
-        {errors.fullName && <p className="form-error">{errors.fullName.message}</p>}
+        <input id="fullName" aria-required="true" aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "fullName-error" : undefined} autoComplete="name" {...register("fullName")} className="form-input" placeholder="Your name" />
+        {errors.fullName && <p id="fullName-error" className="form-error" role="alert">{errors.fullName.message}</p>}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -68,16 +68,16 @@ export default function ContactForm() {
           <label htmlFor="phone" className="form-label">
             Phone Number <span className="text-red-500">*</span>
           </label>
-          <input id="phone" type="tel" autoComplete="tel" {...register("phone")} className="form-input" placeholder="+94 7X XXX XXXX" />
-          {errors.phone && <p className="form-error">{errors.phone.message}</p>}
+          <input id="phone" aria-required="true" aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "phone-error" : undefined} type="tel" autoComplete="tel" {...register("phone")} className="form-input" placeholder="+94 7X XXX XXXX" />
+          {errors.phone && <p id="phone-error" className="form-error" role="alert">{errors.phone.message}</p>}
         </div>
 
         <div>
           <label htmlFor="email" className="form-label">
             Email Address <span className="text-red-500">*</span>
           </label>
-          <input id="email" type="email" autoComplete="email" {...register("email")} className="form-input" placeholder="your@email.com" />
-          {errors.email && <p className="form-error">{errors.email.message}</p>}
+          <input id="email" aria-required="true" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} type="email" autoComplete="email" {...register("email")} className="form-input" placeholder="your@email.com" />
+          {errors.email && <p id="email-error" className="form-error" role="alert">{errors.email.message}</p>}
         </div>
       </div>
 
@@ -85,31 +85,32 @@ export default function ContactForm() {
         <label htmlFor="subject" className="form-label">
           Subject <span className="text-red-500">*</span>
         </label>
-        <input id="subject" {...register("subject")} className="form-input" placeholder="Inquiry subject" />
-        {errors.subject && <p className="form-error">{errors.subject.message}</p>}
+        <input id="subject" aria-required="true" aria-invalid={!!errors.subject} aria-describedby={errors.subject ? "subject-error" : undefined} {...register("subject")} className="form-input" placeholder="Inquiry subject" />
+        {errors.subject && <p id="subject-error" className="form-error" role="alert">{errors.subject.message}</p>}
       </div>
 
       <div>
         <label htmlFor="message" className="form-label">
           Message <span className="text-red-500">*</span>
         </label>
-        <textarea id="message" {...register("message")} className="form-input resize-none" rows={4} placeholder="How can we assist you?" />
-        {errors.message && <p className="form-error">{errors.message.message}</p>}
+        <textarea id="message" aria-required="true" aria-invalid={!!errors.message} aria-describedby={errors.message ? "message-error" : undefined} {...register("message")} className="form-input resize-none" rows={4} placeholder="How can we assist you?" />
+        {errors.message && <p id="message-error" className="form-error" role="alert">{errors.message.message}</p>}
       </div>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full btn btn-primary justify-center disabled:opacity-60"
+        className={styles.submit}
       >
         {isSubmitting ? (
           <>
-            <Loader2 size={16} className="animate-spin" /> Sending Message...
+            <Loader2 size={16} className={styles.spinner} aria-hidden="true" /> Validating enquiry...
           </>
         ) : (
-          "Send Message"
+          "Validate demo enquiry"
         )}
       </button>
+      <p className={styles.footnote} role="status">Demo only. No enquiry is sent to the agency.</p>
     </form>
   );
 }
