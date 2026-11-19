@@ -1,0 +1,3 @@
+:HL["/a1-agency-website/_next/static/chunks/1ig4iujt7kcwc.css","style"]
+:HL["/a1-agency-website/_next/static/chunks/3lw0baivc6asg.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4112,"slots":{"children":{"name":"job-categories","param":null,"prefetchHints":4160,"slots":{"children":{"name":"slug","param":{"type":"d","key":"general-helpers","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"CA4-3DG6A8apK2YT4_sZ3"}
