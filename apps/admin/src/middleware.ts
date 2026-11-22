@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Bypass public static assets, api routes, and the login screen
+  // Static-host shell protection only. Supabase session and staff-profile
+  // authorization is verified by AdminShell in the browser.
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -13,12 +14,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check administrative session token (mock or Supabase token)
-  // In development, allow access; when Supabase is connected, enforce token check
-  const token = request.cookies.get("sb-access-token")?.value;
-  const isDev = process.env.NODE_ENV === "development";
+  const sessionMarker = request.cookies.get("a1-admin-session")?.value;
 
-  if (!token && !isDev) {
+  if (!sessionMarker) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);

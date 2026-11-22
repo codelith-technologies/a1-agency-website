@@ -19,7 +19,7 @@ export function ImageUpload({
   value,
   onChange,
   label = "Upload Image",
-  hint = "PNG, JPG, WebP or SVG up to 5MB",
+  hint = "PNG, JPG or WebP up to 5MB",
   error,
   aspectRatio = "video",
   className,
@@ -36,8 +36,8 @@ export function ImageUpload({
   }[aspectRatio];
 
   const handleFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file.");
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      alert("Please upload PNG, JPG, or WebP.");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -137,7 +137,7 @@ export function ImageUpload({
       <input
         ref={inputRef}
         type="file"
-        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        accept="image/png,image/jpeg,image/webp"
         onChange={onInputChange}
         className="hidden"
       />

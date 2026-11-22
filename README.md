@@ -10,10 +10,10 @@ Enterprise-grade monorepo for A-One Agency, separating the public recruitment po
 * 🛡️ **Admin Portal / Login:** [https://codelith-technologies.github.io/a1-agency-website/admin/](https://codelith-technologies.github.io/a1-agency-website/admin/)
 * 📊 **Admin Dashboard:** [https://codelith-technologies.github.io/a1-agency-website/admin/dashboard](https://codelith-technologies.github.io/a1-agency-website/admin/dashboard)
 
-### 🔐 Demo Admin Credentials
-* **Email:** `admin@a-oneagency.lk` (or `admin@a-oneagency.com`)
-* **Password:** `admin123456`
-* *(A one-click **"Auto-fill"** button is also available directly on the login screen)*
+### 🔐 Staff Authentication
+The demo credential screen and hard-coded password login have been removed.
+Create a real staff account in Supabase Auth, then add the matching trusted role
+to `public.staff_profiles`. Never commit staff passwords or auth tokens.
 
 ---
 

@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function POST() {
-  try {
-    const cookieStore = await cookies();
-    cookieStore.delete("sb-access-token");
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Logout error:", error);
-    return NextResponse.json(
-      { error: "Logout failed." },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(
+    { error: "This demo API is disabled. Use the browser sign-out control." },
+    { status: 410 },
+  );
 }

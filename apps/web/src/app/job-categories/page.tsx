@@ -3,12 +3,12 @@ import { ArrowUpRight, BriefcaseBusiness } from "lucide-react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import CategoryCard from "@/components/categories/CategoryCard";
-import CategoryDirectory from "@/components/categories/CategoryDirectory";
 import { CategoryEmployerCTA, CategorySampleNotice } from "@/components/categories/CategorySupport";
 import { countries, jobCategories, jobs, recruitmentFields } from "@/data";
 import { categorySampleCountries, categorySampleJobs } from "@/lib/category-presentation";
 import { siteConfig } from "@/config/site";
 import styles from "@/components/categories/Categories.module.css";
+import LiveCategoryDirectory from "@/components/categories/LiveCategoryDirectory";
 
 const description = `Explore A-One's ${recruitmentFields.length} agency-confirmed recruitment fields and a separate directory of demonstration job categories. Review sample roles, illustrative LKR salaries and destinations.`;
 export const metadata: Metadata = {
@@ -33,12 +33,9 @@ export default function JobCategoriesPage() {
       </header>
       <div className={`container-padded ${styles.content}`}>
         <CategorySampleNotice />
-        <CategoryDirectory categories={jobCategories.map((category) => {
+        <LiveCategoryDirectory demoCards={jobCategories.map((category) => {
           const sampleJobs = categorySampleJobs(jobs, category.slug);
-          return {
-            slug: category.slug, name: category.name, agencyConfirmed: category.agencyConfirmed,
-            card: <CategoryCard category={category} sampleCount={sampleJobs.length} destinationCount={categorySampleCountries(countries, sampleJobs).length} compact={!category.agencyConfirmed} />,
-          };
+          return <CategoryCard key={category.slug} category={category} sampleCount={sampleJobs.length} destinationCount={categorySampleCountries(countries, sampleJobs).length} compact={!category.agencyConfirmed} />;
         })} />
         <CategoryEmployerCTA />
       </div>

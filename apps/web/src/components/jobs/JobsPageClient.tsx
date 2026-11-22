@@ -9,6 +9,8 @@ import { Breadcrumbs } from "@a1/ui";
 import DirectoryJobCard from "./DirectoryJobCard";
 import JobFilters from "./JobFilters";
 import { jobs, countries, jobCategories } from "@/data";
+import { isSupabaseConfigured, readSupabasePublishedJobs } from "@a1/database";
+import type { Job } from "@/types";
 import { experienceLevels, filterJobs, jobSearchQuery, paginateJobs, parseJobFilters, sortOptions, type JobDirectoryFilters } from "@/lib/job-search";
 import styles from "./Jobs.module.css";
 
@@ -18,6 +20,92 @@ export default function JobsPageClient() {
   const filters = useMemo(() => parseJobFilters(searchParams), [searchParams]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [liveJobs, setLiveJobs] = useState<Job[]>(jobs);
+  const [liveDataError, setLiveDataError] = useState<string | null>(null);
+  const [jobsMode, setJobsMode] = useState<"demo" | "live" | "error">(
+    isSupabaseConfigured() ? "live" : "demo",
+  );
+  const [jobsRetry, setJobsRetry] = useState(0);
+  useEffect(() => {
+    let active = true;
+    readSupabasePublishedJobs().then((result) => {
+      if (!active) return;
+      if (!result.configured) {
+        setJobsMode("demo");
+        setLiveJobs(jobs);
+        return;
+      }
+      if (result.error) {
+        setJobsMode("error");
+        setLiveJobs([]);
+        setLiveDataError(result.error);
+        return;
+      }
+
+      setJobsMode("live");
+      setLiveDataError(null);
+      const mapped = (result.data ?? []).map((row) => {
+        const country = Array.isArray(row.country) ? row.country[0] : row.country;
+        const category = Array.isArray(row.category) ? row.category[0] : row.category;
+        const salaryMin = row.salary_min == null ? undefined : Number(row.salary_min);
+        const salaryMax = row.salary_max == null ? undefined : Number(row.salary_max);
+        const salaryDisplay = salaryMin == null
+          ? "Salary to be confirmed"
+          : salaryMax == null
+            ? `${String(row.currency)} ${salaryMin.toLocaleString("en-US")} / month`
+            : `${String(row.currency)} ${salaryMin.toLocaleString("en-US")} - ${salaryMax.toLocaleString("en-US")} / month`;
+
+        return {
+          id: String(row.id),
+          reference: String(row.reference),
+          slug: String(row.slug),
+          title: String(row.title),
+          country: String(country?.slug ?? ""),
+          countryName: String(country?.name ?? ""),
+          countryFlag: String(country?.flag ?? ""),
+          city: row.city ? String(row.city) : undefined,
+          employer: String(row.employer_name),
+          categorySlug: String(category?.slug ?? ""),
+          categoryName: String(category?.name ?? ""),
+          salaryMin,
+          salaryMax,
+          currency: String(row.currency),
+          salaryDisplay,
+          ageMin: row.minimum_age == null ? undefined : Number(row.minimum_age),
+          ageMax: row.maximum_age == null ? undefined : Number(row.maximum_age),
+          vacancies: Number(row.vacancy_count),
+          description: String(row.description),
+          responsibilities: Array.isArray(row.responsibilities) ? row.responsibilities.map(String) : [],
+          requirements: row.experience_requirements ? [String(row.experience_requirements)] : [],
+          qualifications: Array.isArray(row.qualifications) ? row.qualifications.map(String) : [],
+          experience: String(row.experience_level) as Job["experience"],
+          experienceDisplay: String(row.experience_level),
+          benefits: Array.isArray(row.benefits) ? row.benefits.map(String) : [],
+          accommodation: row.accommodation ? String(row.accommodation) : "",
+          food: row.food ? String(row.food) : "",
+          transportation: row.transportation ? String(row.transportation) : "",
+          medical: row.medical ? String(row.medical) : "",
+          insurance: row.insurance ? String(row.insurance) : "",
+          workingHours: row.working_hours ? String(row.working_hours) : "",
+          contractPeriod: row.contract_duration ? String(row.contract_duration) : "",
+          interviewInfo: row.interview_information ? String(row.interview_information) : undefined,
+          otherConditions: row.other_conditions ? String(row.other_conditions) : undefined,
+          closingDate: row.closing_date ? String(row.closing_date) : "",
+          publishedDate: row.published_at ? String(row.published_at) : "",
+          featured: Boolean(row.featured),
+          isNew: Boolean(row.featured),
+          status: "active",
+          employmentType: String(row.employment_type) as Job["employmentType"],
+          image: row.image_path ? String(row.image_path) : undefined,
+          tags: Array.isArray(row.tags) ? row.tags.map(String) : undefined,
+          createdAt: String(row.created_at),
+          updatedAt: String(row.updated_at),
+        } satisfies Job;
+      });
+      setLiveJobs(mapped);
+    });
+    return () => { active = false; };
+  }, [jobsRetry]);
   const resultsHeading = useRef<HTMLHeadingElement>(null);
   // Refresh date-dependent status on long-lived tabs without changing the catalogue.
   useEffect(() => {
@@ -31,7 +119,7 @@ export default function JobsPageClient() {
     media.addEventListener("change", close);
     return () => media.removeEventListener("change", close);
   }, []);
-  const filtered = useMemo(() => filterJobs(jobs, filters, now), [filters, now]);
+  const filtered = useMemo(() => filterJobs(liveJobs, filters, now), [liveJobs, filters, now]);
   const pagination = paginateJobs(filtered, filters.page);
   const href = (value: JobDirectoryFilters) => { const query = jobSearchQuery(value); return `${pathname}${query ? `?${query}` : ""}`; };
 
@@ -76,7 +164,19 @@ export default function JobsPageClient() {
         </div></section>
 
         <div className={`container-padded ${styles.directory}`}>
-          <p className={styles.demoNotice}><Info size={19} aria-hidden="true" /><span><strong>Sample vacancies.</strong> These are fictional development listings, not live job offers. LKR salaries and age criteria are illustrative sample data, not verified employer terms or exchange-rate conversions.</span></p>
+          {jobsMode === "demo" && (
+            <p className={styles.demoNotice} role="status">
+              <Info size={19} aria-hidden="true" />
+              <span><strong>Development demo data.</strong> Supabase is not configured. Listings are fictional and not live job offers.</span>
+            </p>
+          )}
+          {liveDataError && (
+            <p className={styles.demoNotice} role="alert">
+              <Info size={19} aria-hidden="true" />
+              <span>{liveDataError}</span>
+              <button type="button" onClick={() => setJobsRetry((value) => value + 1)}>Retry</button>
+            </p>
+          )}
           <div className={styles.layout}>
             <JobFilters filters={filters} onChange={updateFilters} totalResults={filtered.length} />
             <section className={styles.results} aria-labelledby="results-heading">

@@ -13,23 +13,17 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  TrendingUp,
 } from "lucide-react";
 import { StatCard, Badge } from "@/components/admin/ui";
+import {
+  isSupabaseConfigured,
+  readSupabaseCountries,
+  readSupabaseJobCategories,
+  readSupabasePublishedJobs,
+  readSupabasePublishedFaqs,
+} from "@a1/database";
 
 export const metadata: Metadata = { title: "Dashboard" };
-
-// ─── Placeholder stats (replace with real DB queries after Supabase setup) ────
-const stats = [
-  { label: "Active Job Vacancies", value: 0, icon: Briefcase, iconColor: "text-navy-600" },
-  { label: "Total Applicants", value: 0, icon: Users, iconColor: "text-teal-600" },
-  { label: "Employer Requests", value: 0, icon: Building2, iconColor: "text-amber-600" },
-  { label: "Pending Reviews", value: 0, icon: Star, iconColor: "text-orange-500" },
-  { label: "Active Announcements", value: 0, icon: Bell, iconColor: "text-blue-600" },
-  { label: "Upcoming Events", value: 0, icon: Calendar, iconColor: "text-purple-600" },
-  { label: "Unread Messages", value: 0, icon: MessageSquare, iconColor: "text-rose-600" },
-  { label: "Published FAQs", value: 0, icon: HelpCircle, iconColor: "text-slate-600" },
-];
 
 const quickLinks = [
   {
@@ -73,7 +67,26 @@ const modules = [
   { label: "Contact Messages", href: "/contact-messages", icon: MessageSquare, desc: "Inbox from public contact form" },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const [countries, categories, jobs, faqs] = await Promise.all([
+    readSupabaseCountries(),
+    readSupabaseJobCategories(),
+    readSupabasePublishedJobs(),
+    readSupabasePublishedFaqs(),
+  ]);
+  const supabaseConfigured = isSupabaseConfigured();
+  const configured = supabaseConfigured && [countries, categories, jobs, faqs].every((result) => result.configured);
+  const queryError = [countries, categories, jobs, faqs].find((result) => result.error)?.error;
+  const stats = [
+    { label: "Published Job Vacancies", value: configured && !queryError ? (jobs.data?.length ?? 0) : 0, icon: Briefcase, iconColor: "text-navy-600" },
+    { label: "Total Applicants", value: "Auth required", icon: Users, iconColor: "text-teal-600" },
+    { label: "Employer Requests", value: "Auth required", icon: Building2, iconColor: "text-amber-600" },
+    { label: "Pending Reviews", value: "Auth required", icon: Star, iconColor: "text-orange-500" },
+    { label: "Active Announcements", value: 0, icon: Bell, iconColor: "text-blue-600" },
+    { label: "Upcoming Events", value: 0, icon: Calendar, iconColor: "text-purple-600" },
+    { label: "Unread Messages", value: 0, icon: MessageSquare, iconColor: "text-rose-600" },
+    { label: "Published FAQs", value: configured && !queryError ? (faqs.data?.length ?? 0) : 0, icon: HelpCircle, iconColor: "text-slate-600" },
+  ];
   const now = new Date();
   const greeting =
     now.getHours() < 12 ? "Good morning" : now.getHours() < 17 ? "Good afternoon" : "Good evening";
@@ -91,7 +104,11 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
           <AlertCircle className="size-4 text-amber-600" />
           <span className="text-xs font-medium text-amber-700">
-            Connect Supabase to see live data
+            {!supabaseConfigured
+              ? "Development demo mode"
+              : queryError
+                ? "Supabase read error"
+                : "Public Supabase reads connected"}
           </span>
         </div>
       </div>
@@ -154,8 +171,8 @@ export default function DashboardPage() {
           {[
             { label: "Admin dashboard structure", done: true },
             { label: "Login page & authentication UI", done: true },
-            { label: "Supabase database connection", done: false },
-            { label: "File storage (Supabase Storage)", done: false },
+            { label: "Supabase database connection", done: configured && !queryError },
+            { label: "File storage (Supabase Storage)", done: true },
             { label: "Server Actions wired to DB", done: false },
             { label: "Public forms saving to DB", done: false },
           ].map((item) => (

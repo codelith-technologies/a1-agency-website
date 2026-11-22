@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home, User, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getStaffSession, signOutStaff } from "@a1/database";
+import { useRouter } from "next/navigation";
 
 const routeLabels: Record<string, string> = {
   admin: "Admin",
@@ -25,6 +28,19 @@ const routeLabels: Record<string, string> = {
 
 export function AdminTopbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [staffName, setStaffName] = useState("Staff");
+  useEffect(() => {
+    getStaffSession().then((result) => {
+      if (result.session) {
+        setStaffName(result.session.displayName || result.session.email);
+      }
+    });
+  }, []);
+  const handleLogout = async () => {
+    await signOutStaff();
+    router.replace("/login");
+  };
   const segments = pathname.split("/").filter(Boolean);
 
   const crumbs = segments.map((seg, i) => {
@@ -66,10 +82,15 @@ export function AdminTopbar() {
           <ExternalLink className="size-3" />
           View Site
         </Link>
-        <div className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5"
+          title="Sign out"
+        >
           <User className="size-3.5 text-slate-500" />
-          <span className="text-xs font-medium text-slate-700">Admin</span>
-        </div>
+          <span className="text-xs font-medium text-slate-700">{staffName}</span>
+        </button>
       </div>
     </header>
   );

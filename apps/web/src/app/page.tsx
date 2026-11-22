@@ -11,6 +11,7 @@ import WhyChooseUs from "@/components/home/WhyChooseUs";
 import EmployerCTA from "@/components/home/EmployerCTA";
 import Testimonials from "@/components/home/Testimonials";
 import FAQPreview from "@/components/home/FAQPreview";
+import SupabaseDiagnostic from "@/components/home/SupabaseDiagnostic";
 
 export const metadata: Metadata = {
   title: `Overseas Jobs for Sri Lankans | ${siteConfig.name}`,
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <SupabaseDiagnostic />
       <HeroSection />
       <MissionVision />
       <EmployerCTA />

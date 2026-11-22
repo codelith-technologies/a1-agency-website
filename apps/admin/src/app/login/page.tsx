@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { setStaffSessionMarker, signInStaff } from "@a1/database";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -23,50 +24,20 @@ export default function AdminLoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const fillDemoCredentials = () => {
-    setValue("email", "admin@a-oneagency.lk", { shouldValidate: true });
-    setValue("password", "admin123456", { shouldValidate: true });
-  };
-
   const onSubmit = async (data: FormData) => {
     setServerError(null);
-    const normalizedEmail = data.email.trim().toLowerCase();
-    const isDemoMatch =
-      (normalizedEmail === "admin@a-oneagency.lk" ||
-        normalizedEmail === "admin@a-oneagency.com") &&
-      data.password === "admin123456";
-
-    try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        // Fallback for static hosting (GitHub Pages) where /api/admin/login is not running
-        if (isDemoMatch) {
-          router.push("/dashboard");
-          return;
-        }
-        const body = await res.json().catch(() => ({}));
-        setServerError(body.error ?? "Invalid credentials. Use demo password: admin123456");
-        return;
-      }
-
-      router.push("/dashboard");
-    } catch {
-      // In static deployment if API route is not available
-      if (isDemoMatch) {
-        router.push("/dashboard");
-        return;
-      }
-      setServerError("Authentication failed. Use demo password: admin123456");
+    const result = await signInStaff(data.email, data.password);
+    if (result.error) {
+      setServerError(result.error);
+      return;
     }
+
+    setStaffSessionMarker();
+    router.replace("/dashboard");
+    router.refresh();
   };
 
   return (
@@ -93,7 +64,7 @@ export default function AdminLoginPage() {
                 id="email"
                 type="email"
                 autoComplete="username"
-                placeholder="admin@a-oneagency.lk"
+                placeholder="staff@a-oneagency.lk"
                 {...register("email")}
                 className={cn(
                   "w-full rounded-lg border bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-navy-400 outline-none transition",
@@ -161,24 +132,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Demo Credentials Box */}
-          <div className="mt-6 rounded-xl border border-brand-gold/30 bg-brand-gold/10 p-3.5 text-xs text-amber-200">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-brand-gold">Demo Login Credentials</span>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="rounded bg-brand-gold/20 px-2 py-0.5 text-[11px] font-medium text-brand-gold hover:bg-brand-gold hover:text-brand-black transition"
-              >
-                Auto-fill
-              </button>
-            </div>
-            <div className="mt-2 space-y-1 font-mono text-[11px] text-white">
-              <p><span className="text-navy-300 font-sans">Email:</span> admin@a-oneagency.lk</p>
-              <p><span className="text-navy-300 font-sans">Password:</span> admin123456</p>
-            </div>
-          </div>
 
           <p className="mt-4 text-center text-[11px] text-navy-500">
             This portal is restricted to authorised personnel only.
