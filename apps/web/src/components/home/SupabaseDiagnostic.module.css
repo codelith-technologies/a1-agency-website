@@ -1,0 +1,35 @@
+.panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  width: min(21rem, calc(100vw - 2rem));
+  border: 1px solid #dbe2ea;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.16);
+  padding: 0.875rem 1rem;
+  color: #0f172a;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.heading {
+  margin: 0 0 0.25rem;
+  color: #0f172a;
+  font-size: 0.875rem;
+}
+
+.line {
+  margin: 0.125rem 0;
+}
+
+.ok {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.error {
+  color: #b91c1c;
+  font-weight: 700;
+}
