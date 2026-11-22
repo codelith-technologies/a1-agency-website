@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus, Image as ImageIcon, Video, Upload } from "lucide-react";
-import { PageHeader, ActionButton, Badge } from "@/components/admin/ui";
+import { PageHeader, ActionButton } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Media Gallery" };
 
@@ -12,7 +12,7 @@ export default function MediaPage() {
         title="Media Gallery"
         description="Upload and manage photos and videos of deployments, events, and agency activity."
         action={
-          <ActionButton href="/admin/media/upload">
+          <ActionButton href="/media/upload">
             <Upload className="size-4" /> Upload Media
           </ActionButton>
         }
@@ -61,7 +61,7 @@ export default function MediaPage() {
         <p className="text-sm font-medium text-slate-500">No media uploaded yet</p>
         <p className="mt-1 text-xs text-slate-400">Upload photos and videos to showcase agency activity</p>
         <Link
-          href="/admin/media/upload"
+          href="/media/upload"
           className="mt-4 inline-flex items-center gap-2 rounded-lg bg-navy-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-navy-700"
         >
           <Plus className="size-4" /> Upload First Media

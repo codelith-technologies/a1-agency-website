@@ -63,7 +63,7 @@ export default function NewApplicantPage() {
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/admin/applicants" className="text-slate-400 hover:text-navy-700 transition">
+        <Link href="/applicants" className="text-slate-400 hover:text-navy-700 transition">
           <ArrowLeft className="size-5" />
         </Link>
         <h1 className="text-xl font-bold text-navy-900">Add New Applicant</h1>
@@ -209,7 +209,7 @@ export default function NewApplicantPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-2">
-          <Link href="/admin/applicants" className="text-sm text-slate-500 hover:text-navy-700 transition">
+          <Link href="/applicants" className="text-sm text-slate-500 hover:text-navy-700 transition">
             ← Cancel
           </Link>
           <button

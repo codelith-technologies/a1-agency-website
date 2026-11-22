@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useStaff } from "./StaffContext";
+import { canAccessAdminRoute, normalizeAdminPath } from "@/lib/permissions";
 import {
   LayoutDashboard,
   Briefcase,
@@ -79,10 +81,11 @@ function NavItem({
   collapsed: boolean;
 }) {
   const pathname = usePathname();
+  const normalizedPathname = normalizeAdminPath(pathname);
   const isActive =
     href === "/dashboard"
-      ? pathname === href
-      : pathname.startsWith(href);
+      ? normalizedPathname === href
+      : normalizedPathname === href || normalizedPathname.startsWith(`${href}/`);
 
   return (
     <Link
@@ -107,16 +110,16 @@ export function AdminSidebar() {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
     Object.fromEntries(navGroups.map((g) => [g.label, true]))
   );
-  const router = useRouter();
+  const { session, logout } = useStaff();
+  const visibleGroups = navGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canAccessAdminRoute(session.role, item.href)),
+  })).filter((group) => group.items.length > 0);
 
   const toggleGroup = (label: string) => {
     setExpandedGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
-  const handleLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/login");
-  };
 
   return (
     <aside
@@ -148,7 +151,7 @@ export function AdminSidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
-        {navGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <div key={group.label}>
             {!collapsed && (
               <button
@@ -179,7 +182,7 @@ export function AdminSidebar() {
       {/* Footer */}
       <div className="border-t border-navy-800 p-2">
         <button
-          onClick={handleLogout}
+          onClick={() => void logout()}
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-navy-300 transition hover:bg-red-500/10 hover:text-red-400",
             collapsed && "justify-center px-2"

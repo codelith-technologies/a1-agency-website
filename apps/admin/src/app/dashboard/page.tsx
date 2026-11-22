@@ -15,6 +15,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { StatCard, Badge } from "@/components/admin/ui";
+import { StaffRouteAccess } from "@/components/admin/layout/StaffContext";
 import {
   isSupabaseConfigured,
   readSupabaseCountries,
@@ -40,13 +41,13 @@ const quickLinks = [
   },
   {
     label: "Create Announcement",
-    href: "/announcements/new",
+    href: "/announcements",
     icon: Bell,
     description: "Broadcast an urgent notice or update",
   },
   {
     label: "Add Event",
-    href: "/events/new",
+    href: "/events",
     icon: Calendar,
     description: "Schedule a recruitment drive or interview",
   },
@@ -125,6 +126,7 @@ export default async function DashboardPage() {
         <h2 className="mb-3 text-sm font-semibold text-navy-800">Quick Actions</h2>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {quickLinks.map((link) => (
+            <StaffRouteAccess key={link.href} href={link.href}>
             <Link
               key={link.href}
               href={link.href}
@@ -140,6 +142,7 @@ export default async function DashboardPage() {
                 <p className="mt-0.5 text-[11px] text-slate-400">{link.description}</p>
               </div>
             </Link>
+            </StaffRouteAccess>
           ))}
         </div>
       </div>
@@ -149,6 +152,7 @@ export default async function DashboardPage() {
         <h2 className="mb-3 text-sm font-semibold text-navy-800">All Modules</h2>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map((mod) => (
+            <StaffRouteAccess key={mod.href} href={mod.href}>
             <Link
               key={mod.href}
               href={mod.href}
@@ -160,6 +164,7 @@ export default async function DashboardPage() {
               </div>
               <ArrowRight className="size-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-navy-500" />
             </Link>
+            </StaffRouteAccess>
           ))}
         </div>
       </div>

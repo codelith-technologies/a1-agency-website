@@ -1,8 +1,9 @@
 # Supabase foundation
 
-Phase 27 adds the database and storage foundation only. The existing public and
-admin applications continue to use their demo datasets and static-export
-configuration.
+Phase 27 added the database and storage foundation. Phase 28 hardens staff
+authentication, session handling, recovery, role-aware navigation, and RLS.
+Both applications retain static export. Existing public-read/demo/error behavior
+is preserved; full admin CRUD is not implemented.
 
 ## Create and configure a project
 
@@ -23,19 +24,24 @@ configuration.
 
 ## Apply migrations and seed development data
 
-Install and authenticate the Supabase CLI locally, or link a local project:
+For a hosted **development** project, authenticate and link the intended project.
+Replace the project-ref placeholder with its dashboard project ID, then review
+the pending changes before applying them:
 
 ```powershell
 npx supabase login
 npx supabase link --project-ref your-project-ref
+npx supabase db push --dry-run
 npx supabase db push
-npx supabase db reset
 ```
 
-`db push` applies `supabase/migrations/` without destructive reset behavior.
-Use `db reset` only against a disposable local/development database. The seed
-is repeatable and all jobs remain `draft`; it does not create users or
-credentials.
+`db push` applies `supabase/migrations/` without resetting the database. It does
+not seed hosted projects by default. Never reset the hosted database as a setup
+step. For a **separate disposable local instance**, Docker and a local Supabase
+configuration are required; initialize once (`npx supabase init`), start it
+(`npx supabase start`), then use `npx supabase db reset --local` only when replacing
+all of its local data is intentional. The seed contains fictional draft jobs;
+it does not create users or credentials.
 
 The migration creates `public-media` and `recruitment-documents` as private
 staff-controlled storage areas. Public delivery must use an explicitly approved
@@ -104,13 +110,17 @@ Staff accounts are not created by the seed process. In Supabase:
    ```sql
    insert into public.staff_profiles (user_id, role, display_name, active)
    values ('00000000-0000-4000-8000-000000000000',
-           'administrator',
-           'Development Administrator',
+           'owner',
+           'Development Owner',
            true);
    ```
 
-   Replace the UUID and role as needed. The accepted roles are `owner`,
-   `administrator`, `recruiter`, and `content_editor`.
+   Replace the example UUID with the newly created Auth UUID locally; do not
+   commit real identifiers or passwords. Bootstrap the first development account
+   as `owner`. Further accounts can be `administrator`, `recruiter`, or
+   `content_editor`. Only an active owner can manage staff profiles through RLS;
+   administrators cannot assign roles or promote themselves. Ordinary active
+   staff can read their own profile, not other staff profiles.
 4. Open `http://localhost:3001/login`, sign in with the Supabase Auth email and
    password, and verify `/dashboard` loads.
 
@@ -118,12 +128,46 @@ The repository does not store staff passwords or identity secrets. Supabase
 Auth passwords and staff-role values must be managed by an authorized project
 owner.
 
+## Password recovery
+
+The static `/reset-password` route requests Supabase recovery email and handles
+`PASSWORD_RECOVERY` before allowing an active, verified staff member to update
+their password. It signs out after a successful update; recovery never grants a
+staff role. A reloaded or expired recovery screen may require a fresh email link.
+
+Configure the development and deployed Site URL and exact redirect allowlist in
+Supabase Auth. Include `http://localhost:3001/reset-password` for local testing
+and the actual HTTPS deployment URL including its admin base path, for example
+`https://YOUR-ORGANIZATION.github.io/a1-agency-website/admin/reset-password`.
+Configure an approved email sender/SMTP provider, appropriate rate limits, and
+disable public signups in the Supabase project if accounts are staff-only.
+Do not use wildcard production redirect URLs. Test expired/reused links and
+email delivery before enabling recovery for staff. No email was sent as part of
+implementation verification.
+
+See [Supabase password recovery](https://supabase.com/docs/reference/javascript/auth-resetpasswordforemail)
+and [auth-state events](https://supabase.com/docs/reference/javascript/auth-onauthstatechange).
+
 ## Hosting and remaining work
 
 GitHub Pages cannot run Next.js server actions, API handlers, middleware
 authentication, or private signed-download operations. Jobs created after a
 static deployment cannot automatically produce new `/jobs/[slug]` pages
-without a rebuild or a server-capable routing architecture. Phase 28 should
-add real Supabase Auth and server-side workflows before connecting forms,
-uploads, or admin CRUD. Production deployment, email, payments, analytics, and
-live submissions remain out of scope for Phase 27.
+without a rebuild or a server-capable routing architecture. Static assets and
+RSC payloads are public, regardless of the client-side gate: never embed private
+records in Server Components/build output. The obsolete marker-cookie middleware
+and disabled login/logout API stubs were removed; `a1-admin-session` is not used
+for authorization. Browser Supabase Auth validates identity and RLS enforces
+data access. The UI rechecks on navigation, Auth events, focus, and every minute
+while visible. RLS checks active staff status on each database request.
+
+Server-enforced route access, HttpOnly server sessions, trusted submission
+endpoints, public-media delivery, and privileged staff provisioning APIs require
+server-capable hosting. No provider migration is included. Browser logout cannot
+revoke an already-issued access token instantly; it remains valid until expiry.
+Deactivating the staff profile denies protected RLS operations immediately.
+Already-downloaded data cannot be recalled. Use HTTPS and an appropriately short
+JWT lifetime, and consider MFA and CSP before production.
+
+See [Phase 28 permissions](./PHASE28_PERMISSIONS.md) and the
+[Phase 28 verification report](./PHASE28_REPORT.md) for evidence and pending tests.

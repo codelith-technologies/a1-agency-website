@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus, Search } from "lucide-react";
-import { PageHeader, Badge, ActionButton } from "@/components/admin/ui";
+import { PageHeader, ActionButton } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Applicants" };
 
@@ -28,7 +28,7 @@ export default function ApplicantsPage() {
         title="Job Applicants"
         description="Manage all applicants across the full recruitment pipeline — from application to departure."
         action={
-          <ActionButton href="/admin/applicants/new">
+          <ActionButton href="/applicants/new">
             <Plus className="size-4" /> Add Applicant
           </ActionButton>
         }
@@ -69,7 +69,7 @@ export default function ApplicantsPage() {
             <tr>
               <td colSpan={9} className="px-4 py-12 text-center text-sm text-slate-400">
                 No applicants yet.{" "}
-                <Link href="/admin/applicants/new" className="font-medium text-navy-600 underline">
+                <Link href="/applicants/new" className="font-medium text-navy-600 underline">
                   Add the first applicant →
                 </Link>
               </td>
