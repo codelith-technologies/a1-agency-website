@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Plus, Search, Filter } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { PageHeader, Badge, ActionButton } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Job Vacancies" };
@@ -33,7 +33,7 @@ export default function JobsPage() {
         title="Job Vacancies"
         description="Manage all job postings including SLBFE approvals, quotas and closing dates."
         action={
-          <ActionButton href="/admin/jobs/new">
+          <ActionButton href="/jobs/new">
             <Plus className="size-4" /> New Job
           </ActionButton>
         }
@@ -85,7 +85,7 @@ export default function JobsPage() {
               <tr>
                 <td colSpan={9} className="px-4 py-12 text-center text-sm text-slate-400">
                   No job vacancies yet.{" "}
-                  <Link href="/admin/jobs/new" className="font-medium text-navy-600 underline">
+                  <Link href="/jobs/new" className="font-medium text-navy-600 underline">
                     Post your first job →
                   </Link>
                 </td>
@@ -110,14 +110,7 @@ export default function JobsPage() {
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-slate-600">{job.closingDate}</td>
-                  <td className="px-4 py-3 text-center">
-                    <Link
-                      href={`/admin/jobs/${job.id}`}
-                      className="text-xs font-medium text-navy-600 hover:underline"
-                    >
-                      Edit
-                    </Link>
-                  </td>
+                  <td className="px-4 py-3 text-center text-slate-400">—</td>
                 </tr>
               ))
             )}

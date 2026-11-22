@@ -5,6 +5,8 @@ export type SupabaseConfig = {
   publishableKey: string;
 };
 
+let browserClient: SupabaseClient | null = null;
+
 export function isSupabaseConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
@@ -32,8 +34,13 @@ function readSupabaseConfig(): SupabaseConfig | null {
  * remain usable without environment variables.
  */
 export function createSupabaseBrowserClient(): SupabaseClient | null {
+  if (typeof window !== "undefined" && browserClient) return browserClient;
   const config = readSupabaseConfig();
-  return config ? createClient(config.url, config.publishableKey) : null;
+  if (!config) return null;
+  const client = createClient(config.url, config.publishableKey);
+  // Never share authenticated state across server/static-render requests.
+  if (typeof window !== "undefined") browserClient = client;
+  return client;
 }
 
 export function createRequiredSupabaseBrowserClient(): SupabaseClient {

@@ -11,7 +11,6 @@ import {
   Input,
   Textarea,
   Select,
-  ActionButton,
 } from "@/components/admin/ui";
 
 const schema = z.object({
@@ -58,7 +57,8 @@ const schema = z.object({
   otherConditions: z.string().optional(),
 });
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.output<typeof schema>;
+type FormInput = z.input<typeof schema>;
 
 const providedOptions = [
   { value: "Provided", label: "Provided" },
@@ -78,8 +78,8 @@ export default function NewJobPage() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema) as any,
+  } = useForm<FormInput, unknown, FormData>({
+    resolver: zodResolver(schema),
     defaultValues: {
       status: "draft",
       genderPreference: "any",
@@ -105,7 +105,7 @@ export default function NewJobPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center gap-3">
-        <Link href="/admin/jobs" className="text-slate-400 hover:text-navy-700 transition">
+        <Link href="/jobs" className="text-slate-400 hover:text-navy-700 transition">
           <ArrowLeft className="size-5" />
         </Link>
         <h1 className="text-xl font-bold text-navy-900">Post New Job Vacancy</h1>
@@ -401,7 +401,7 @@ export default function NewJobPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-2">
-          <Link href="/admin/jobs" className="text-sm text-slate-500 hover:text-navy-700 transition">
+          <Link href="/jobs" className="text-sm text-slate-500 hover:text-navy-700 transition">
             ← Cancel
           </Link>
           <button

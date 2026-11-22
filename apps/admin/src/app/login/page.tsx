@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,6 +21,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [showPass, setShowPass] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const submitting = useRef(false);
 
   const {
     register,
@@ -28,16 +30,22 @@ export default function AdminLoginPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
+    if (submitting.current) return;
+    submitting.current = true;
     setServerError(null);
-    const result = await signInStaff(data.email, data.password);
-    if (result.error) {
-      setServerError(result.error);
-      return;
+    try {
+      const result = await signInStaff(data.email, data.password);
+      if (!result.session) {
+        setServerError(result.error);
+        return;
+      }
+      setStaffSessionMarker();
+      router.replace("/dashboard");
+    } catch {
+      setServerError("Sign-in is temporarily unavailable. Please try again.");
+    } finally {
+      submitting.current = false;
     }
-
-    setStaffSessionMarker();
-    router.replace("/dashboard");
-    router.refresh();
   };
 
   return (
@@ -54,7 +62,7 @@ export default function AdminLoginPage() {
             <p className="mt-1 text-sm text-navy-300">A-One Foreign Employment Agency</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+          <form onSubmit={(event) => { void handleSubmit(onSubmit)(event); }} className="space-y-4" noValidate>
             {/* Email */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-medium text-navy-200">
@@ -111,7 +119,7 @@ export default function AdminLoginPage() {
 
             {/* Server error */}
             {serverError && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
+              <div role="alert" className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
                 <p className="text-xs text-red-300">{serverError}</p>
               </div>
             )}
@@ -132,6 +140,10 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
+
+          <Link href="/reset-password" className="mt-4 block text-center text-xs text-navy-200 underline">
+            Forgot your password?
+          </Link>
 
           <p className="mt-4 text-center text-[11px] text-navy-500">
             This portal is restricted to authorised personnel only.

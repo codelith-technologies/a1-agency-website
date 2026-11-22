@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home, User, ExternalLink } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getStaffSession, signOutStaff } from "@a1/database";
-import { useRouter } from "next/navigation";
+import { useStaff } from "./StaffContext";
 
 const routeLabels: Record<string, string> = {
   admin: "Admin",
@@ -28,20 +26,12 @@ const routeLabels: Record<string, string> = {
 
 export function AdminTopbar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [staffName, setStaffName] = useState("Staff");
-  useEffect(() => {
-    getStaffSession().then((result) => {
-      if (result.session) {
-        setStaffName(result.session.displayName || result.session.email);
-      }
-    });
-  }, []);
-  const handleLogout = async () => {
-    await signOutStaff();
-    router.replace("/login");
-  };
-  const segments = pathname.split("/").filter(Boolean);
+  const { session, logout } = useStaff();
+  const staffName = session.displayName || session.email;
+  const segments = pathname
+    .replace(/^\/(?:a1-agency-website\/admin|admin)/, "")
+    .split("/")
+    .filter(Boolean);
 
   const crumbs = segments.map((seg, i) => {
     const href = "/" + segments.slice(0, i + 1).join("/");
@@ -84,12 +74,12 @@ export function AdminTopbar() {
         </Link>
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={() => void logout()}
           className="flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5"
           title="Sign out"
         >
           <User className="size-3.5 text-slate-500" />
-          <span className="text-xs font-medium text-slate-700">{staffName}</span>
+          <span className="text-xs font-medium text-slate-700">{staffName} · {session.role.replaceAll("_", " ")}</span>
         </button>
       </div>
     </header>
