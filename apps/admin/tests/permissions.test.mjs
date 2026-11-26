@@ -81,5 +81,6 @@ test("dashboard navigation files contain only App Router paths, not /admin prefi
 
 test("owner-facing create routes exist in the App Router", () => {
   assert.equal(fs.existsSync(fileURLToPath(new URL("../src/app/jobs/new/page.tsx", import.meta.url))), true);
+  assert.equal(fs.existsSync(fileURLToPath(new URL("../src/app/jobs/edit/page.tsx", import.meta.url))), true);
   assert.equal(fs.existsSync(fileURLToPath(new URL("../src/app/media/upload/page.tsx", import.meta.url))), true);
 });
